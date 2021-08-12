@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import *
 import pyqtgraph as pg
-
+import time
 
 class MyWindow(QMainWindow):
     def __init__(self):
