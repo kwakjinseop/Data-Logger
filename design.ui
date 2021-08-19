@@ -18,6 +18,20 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
+    <item row="1" column="0">
+     <widget class="QPushButton" name="pushButton">
+      <property name="text">
+       <string>Load</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QPushButton" name="pushButton_4">
+      <property name="text">
+       <string>Stop</string>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout">
       <item row="1" column="0">
@@ -49,7 +63,7 @@
             <item>
              <widget class="QRadioButton" name="radioButton_14">
               <property name="text">
-               <string>즉시 시작 버튼 사용</string>
+               <string>즉시 시작</string>
               </property>
              </widget>
             </item>
@@ -61,7 +75,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QDateTimeEdit" name="dateTimeEdit"/>
+             <widget class="QTimeEdit" name="timeEdit"/>
             </item>
             <item>
              <widget class="QRadioButton" name="radioButton_16">
@@ -75,7 +89,7 @@
           <widget class="QWidget" name="layoutWidget">
            <property name="geometry">
             <rect>
-             <x>290</x>
+             <x>260</x>
              <y>50</y>
              <width>81</width>
              <height>111</height>
@@ -397,7 +411,7 @@
             </rect>
            </property>
            <property name="text">
-            <string>즉시 중지버튼 사용</string>
+            <string>중지버튼 사용</string>
            </property>
           </widget>
           <widget class="QLineEdit" name="lineEdit_2">
@@ -413,58 +427,6 @@
             </rect>
            </property>
           </widget>
-          <widget class="QWidget" name="layoutWidget">
-           <property name="geometry">
-            <rect>
-             <x>140</x>
-             <y>80</y>
-             <width>195</width>
-             <height>45</height>
-            </rect>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_3">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_15">
-              <property name="text">
-               <string>DD</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLabel" name="label_16">
-              <property name="text">
-               <string>HH</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QLabel" name="label_14">
-              <property name="text">
-               <string>MM</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="3">
-             <widget class="QLabel" name="label_28">
-              <property name="text">
-               <string>SS</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QSpinBox" name="spinBox_18"/>
-            </item>
-            <item row="1" column="1">
-             <widget class="QSpinBox" name="spinBox_16"/>
-            </item>
-            <item row="1" column="2">
-             <widget class="QSpinBox" name="spinBox_15"/>
-            </item>
-            <item row="1" column="3">
-             <widget class="QSpinBox" name="spinBox_17"/>
-            </item>
-           </layout>
-          </widget>
           <widget class="QPushButton" name="pushButton_3">
            <property name="geometry">
             <rect>
@@ -478,35 +440,38 @@
             <string>Apply</string>
            </property>
           </widget>
+          <widget class="QTimeEdit" name="timeEdit_2">
+           <property name="geometry">
+            <rect>
+             <x>130</x>
+             <y>90</y>
+             <width>118</width>
+             <height>22</height>
+            </rect>
+           </property>
+          </widget>
          </widget>
         </item>
        </layout>
       </item>
      </layout>
     </item>
-    <item row="1" column="2">
+    <item row="1" column="1">
      <widget class="QPushButton" name="pushButton_2">
       <property name="text">
        <string>Save</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>Load</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QPushButton" name="pushButton_4">
-      <property name="text">
-       <string>Clear</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1" colspan="2">
+    <item row="0" column="1" colspan="3">
      <layout class="QHBoxLayout" name="xmcdk"/>
+    </item>
+    <item row="1" column="3">
+     <widget class="QPushButton" name="pushButton_5">
+      <property name="text">
+       <string>Reset</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -519,27 +484,20 @@
      <height>26</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu">
-    <property name="title">
-     <string>재생</string>
-    </property>
-    <addaction name="actionStart"/>
-   </widget>
-   <widget class="QMenu" name="menu_2">
-    <property name="title">
-     <string>정지</string>
-    </property>
-    <addaction name="actionStop"/>
-   </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
      <string>설정</string>
     </property>
-    <addaction name="actionReset"/>
+    <widget class="QMenu" name="menuConnect">
+     <property name="title">
+      <string>Connect</string>
+     </property>
+     <addaction name="actionCOM1"/>
+    </widget>
+    <addaction name="menuConnect"/>
     <addaction name="actionExit"/>
+    <addaction name="actionConnect"/>
    </widget>
-   <addaction name="menu"/>
-   <addaction name="menu_2"/>
    <addaction name="menu_3"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -573,14 +531,39 @@
     <string>All_Start</string>
    </property>
   </action>
-  <action name="actionReset">
+  <action name="actionExit">
    <property name="text">
     <string>Reset</string>
    </property>
   </action>
-  <action name="actionExit">
+  <action name="actionConnect">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionCOM1">
+   <property name="text">
+    <string>COM1</string>
+   </property>
+  </action>
+  <action name="actionCOM">
+   <property name="text">
+    <string>COM2</string>
+   </property>
+  </action>
+  <action name="actionCOM_2">
+   <property name="text">
+    <string>COM3</string>
+   </property>
+  </action>
+  <action name="actionCOM4">
+   <property name="text">
+    <string>COM4</string>
+   </property>
+  </action>
+  <action name="actionCOM5">
+   <property name="text">
+    <string>COM5</string>
    </property>
   </action>
  </widget>
