@@ -71,9 +71,67 @@ SpinBox 반환: .value(): 현재 SpinBox에 있는 값을 반환한다.
 
 
 해야될 것(8.12기준)
+
 -그래프 위젯에 옮겨넣기
 -마이크로 세컨드 파이썬에서 어떻게 구하는지 확인
 -Simpling Rate 구현하기
 
 
+명령어 정리: 
+OPC: Operation complete command
 
+DCI: DC전류
+DCV: DC전압
+
+Sampling Rate: 시간적으로 얼마만큼의 간격으로 데이터를 가져올지를 정하는 기준이다.
+
+
+
+<<8.13현재 남은 부분>>
+Sampling Rate 구현
+Stop Duration 구현
+csv load, save 구현
+
+
+
+Timer?
+Sampling Rate가 작을 수록 그래프의 형태 변환이 커진다.
+
+TRACe == DATA(현재 200쪽 보고 있었음)
+
+예상수치값: 3V
+h
+DC의 그래프 형태는 직선형태
+
+디스플레이의 별표: Reading being stored.
+버퍼데이터에 한글자씩 들어가는 듯????
+
+
+현재 남은 것: 
+simpling rate, csv import, 
+
+기본rate: 1PLC(medium)
+빠른rate: 0.1PLC
+느린rate: 10 PLC
+
+DEF
+MIN
+MAX
+
+Sampling rate: 초당 샘플의 빈도수 => 초당에서 다른 무언가로 바꾸는게 목적
+
+현재 남은 것: csv import, sampling rate, csv 저장하기 수정, com포트 ui다듬기
+sampling rate는 rate로 해결하면 될 것으로 보임.
+sampling rate 해결방안: ':SENS:VOLT:DC:NPLC 1\r\n' 1에 값에 원하는 값을 넣으면 됨.
+
+1PLC == 16.67msec(60Hz)
+1PLC == 20msec(50Hz,400Hz)
+
+
+주파수를 알아야함(필요없음, 그냥 코드 내 timer를 이용해서 시간으로 나누면 됨)
+
+timedelta객체
+
+
+8.19 Sampling rate 완료
+PLC: Power Line Cycles
