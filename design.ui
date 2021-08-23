@@ -32,6 +32,20 @@
       </property>
      </widget>
     </item>
+    <item row="1" column="1">
+     <widget class="QPushButton" name="pushButton_2">
+      <property name="text">
+       <string>Save</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="3">
+     <widget class="QPushButton" name="pushButton_5">
+      <property name="text">
+       <string>Reset</string>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout">
       <item row="1" column="0">
@@ -45,6 +59,57 @@
         <property name="rightMargin">
          <number>0</number>
         </property>
+        <item>
+         <widget class="QGroupBox" name="groupBox_5">
+          <property name="title">
+           <string>GroupBox</string>
+          </property>
+          <widget class="QWidget" name="">
+           <property name="geometry">
+            <rect>
+             <x>21</x>
+             <y>31</y>
+             <width>261</width>
+             <height>121</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>COM</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="comboBox"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QPushButton" name="pushButton_6">
+                <property name="text">
+                 <string>Connect</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_7">
+                <property name="text">
+                 <string>Disconnect</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
         <item>
          <widget class="QGroupBox" name="groupBox_4">
           <property name="title">
@@ -456,49 +521,10 @@
       </item>
      </layout>
     </item>
-    <item row="1" column="1">
-     <widget class="QPushButton" name="pushButton_2">
-      <property name="text">
-       <string>Save</string>
-      </property>
-     </widget>
-    </item>
     <item row="0" column="1" colspan="3">
      <layout class="QHBoxLayout" name="xmcdk"/>
     </item>
-    <item row="1" column="3">
-     <widget class="QPushButton" name="pushButton_5">
-      <property name="text">
-       <string>Reset</string>
-      </property>
-     </widget>
-    </item>
    </layout>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1346</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menu_3">
-    <property name="title">
-     <string>설정</string>
-    </property>
-    <widget class="QMenu" name="menuConnect">
-     <property name="title">
-      <string>Connect</string>
-     </property>
-     <addaction name="actionCOM1"/>
-    </widget>
-    <addaction name="menuConnect"/>
-    <addaction name="actionExit"/>
-    <addaction name="actionConnect"/>
-   </widget>
-   <addaction name="menu_3"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionStart">
