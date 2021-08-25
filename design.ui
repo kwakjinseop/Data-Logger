@@ -64,7 +64,7 @@
           <property name="title">
            <string>GroupBox</string>
           </property>
-          <widget class="QWidget" name="">
+          <widget class="QWidget" name="layoutWidget">
            <property name="geometry">
             <rect>
              <x>21</x>
@@ -141,13 +141,6 @@
             </item>
             <item>
              <widget class="QTimeEdit" name="timeEdit"/>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="radioButton_16">
-              <property name="text">
-               <string>외부 트리거 시</string>
-              </property>
-             </widget>
             </item>
            </layout>
           </widget>
@@ -431,22 +424,6 @@
           <property name="title">
            <string>데이터 로깅 중지</string>
           </property>
-          <widget class="QRadioButton" name="radioButton_7">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>130</y>
-             <width>211</width>
-             <height>19</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>지정한 수의 샘플 수집 후</string>
-           </property>
-          </widget>
           <widget class="QRadioButton" name="radioButton_5">
            <property name="enabled">
             <bool>true</bool>
@@ -477,19 +454,6 @@
            </property>
            <property name="text">
             <string>중지버튼 사용</string>
-           </property>
-          </widget>
-          <widget class="QLineEdit" name="lineEdit_2">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>210</x>
-             <y>130</y>
-             <width>81</width>
-             <height>21</height>
-            </rect>
            </property>
           </widget>
           <widget class="QPushButton" name="pushButton_3">

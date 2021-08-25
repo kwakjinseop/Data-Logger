@@ -1,20 +1,17 @@
-import csv
-import subprocess
-import sys
-from PyQt5.QtCore import QTimer, QDateTime, QProcess
-from PyQt5.QtWidgets import *
-from PyQt5 import uic
-import serial, time
-import pyqtgraph as pg
-from threading import Thread
-import sys
-import time
-import pandas as pd
-from pandas import DataFrame
+import csv #CSV 읽기/쓰기
+import subprocess #프로그램 시작/재시작
+from PyQt5.QtCore import QDateTime #시간관련 위젯
+from PyQt5.QtWidgets import * # 기본적인 위젯구조
+from PyQt5 import uic #ui 파일과의 연결
+from serial import Serial # 시리얼 통신
+import pyqtgraph as pg # pyqtgraph(그래프)
+from threading import Thread # 스레드 구현
+import sys # 시스템 접근
+import time # 시간관련 라이브러리
 from datetime import datetime, timedelta
 import datetime
-import serial.tools.list_ports
-import os
+import serial.tools.list_ports # 연결가능한 COM포트 출력
+import os # 운영체제 접근
 
 form_class = uic.loadUiType("design.ui")[0]
 
@@ -33,6 +30,7 @@ nowTime = now.strftime('%H:%M:%S')
 new_time_data = 0
 limit_time = 0
 specifictime = 0
+realtime= ""
 
 start_time=""
 startsignal = 0
@@ -52,6 +50,9 @@ customsignal = 0
 timetable=[]
 timelabel=[]
 
+plotx=[]
+ploty=[]
+
 
 class Main(pg.AxisItem):
     def __init__(self, *args, **kwargs):
@@ -70,6 +71,8 @@ class Main(pg.AxisItem):
 class MyWindow(QMainWindow, form_class):
     global xlabel, new_time_data, DCVsignal, DCIsignal, DCVxlabel, DCIxlabel, limit_time
 
+
+
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -77,13 +80,13 @@ class MyWindow(QMainWindow, form_class):
         self.timeEdit.setEnabled(False)
         self.radioButton_14.clicked.connect(self.menu_able)
         self.radioButton_15.clicked.connect(self.menu_disable)
-        self.radioButton_16.clicked.connect(self.menu1_disable)
-        self.timeEdit.setDateTime(QDateTime.currentDateTime())
+        self.timeEdit.setDateTime(QDateTime.currentDateTime()) #timeEdit속 기본 시간값을 현재시간으로 설정
 
-        ########### 연결도입 부분 #######################3
-        ports = serial.tools.list_ports.comports()
+        ########### 연결도입 부분 #######################
+        ports = serial.tools.list_ports.comports() # 연결가능한 포트 번호 출력
         a = [port.name for port in ports]
-        self.comboBox.addItem(a[0])
+        if len(a) != 0:
+            self.comboBox.addItem(a[0])
         self.pushButton_6.clicked.connect(self.serialconnect)
         self.pushButton_7.clicked.connect(self.disconnectserial)
 
@@ -121,9 +124,8 @@ class MyWindow(QMainWindow, form_class):
         self.radioButton_5.clicked.connect(self.aftertime)
         self.timeEdit_2.setDateTime(QDateTime.currentDateTime())
         self.timeEdit_2.dateTimeChanged.connect(self.makelimittime)
-        self.radioButton_7.clicked.connect(self.aftersample)
         self.timeEdit_2.setEnabled(False)
-        self.lineEdit_2.setEnabled(False)
+
 
         ########## Stop버튼 부분 #############
         self.pushButton_4.setText("Stop")
@@ -136,11 +138,14 @@ class MyWindow(QMainWindow, form_class):
         ####### 설정메뉴 부분 #################
         ports = serial.tools.list_ports.comports()
         a = [port.name for port in ports]
-        self.actionCOM1.setObjectName("actionCOM")
-        self.actionCOM1.setText(a[0])
+        # self.actionCOM1.setObjectName("actionCOM")
+        # self.actionCOM1.setText(a[0])
 
         ############재시작기능 구현##############
         self.pushButton_5.clicked.connect(self.restartfunction)
+
+
+
 
 
 
@@ -152,15 +157,16 @@ class MyWindow(QMainWindow, form_class):
 
 
 
-    def serialconnect(self):
+    def serialconnect(self): #Serial 연결부분
         global ser
-        ser = serial.Serial(port='COM5', baudrate=9600)
+        ser = serial.Serial(port='COM5', baudrate=9600) #포트번호와 baudrate를 맞춰주어야 함.
         reply = QMessageBox.question(self, 'Message', 'Sucessfully Connected',
                                      QMessageBox.Yes)
+        print(serial.Serial)
 
     def disconnectserial(self):
         global ser
-        ser.close()
+        ser.close() #Serial 연결 종료구문
         reply = QMessageBox.question(self, 'Message', 'Successfully Disconnected',
                                      QMessageBox.Yes)
 
@@ -287,10 +293,8 @@ class MyWindow(QMainWindow, form_class):
     def menu_disable(self):  # '특정 시간에' 항목을 선택했을 경우
         self.timeEdit.setEnabled(True)
 
-    def menu1_disable(self):
-        self.timeEdit.setEnabled(False)
 
-    def DCIstart(self):  # 일단은 기능전환은 되는 것 확인, 하지만 오류 남아있음
+    def DCIstart(self):
         global Target, DCIsignal, DCVsignal
         DCIsignal = 1
         DCVsignal = 0
@@ -355,15 +359,18 @@ class MyWindow(QMainWindow, form_class):
 
         self.th = Thread(target=self.update_plot, args=())
         self.th2 = Thread(target=self.collect, args=())
+        # self.th3 = Thread(target=self.csvupdate, args=())
         self.th.start()
         self.th2.start()
+        # self.th3.start()
 
 
     def collect(self):
         global answer, xlabel, stopvalue, new_time_data, DCVsignal, DCIsignal, customsignal, minimumsignal, SSeconds, start_time, startsignal
         if startsignal == 1: #예정시간이 정해져 있는 경우
             if stopvalue % 2 != 0 and DCVsignal == 1 and DCIsignal == 0:
-                while True:
+                now=""
+                while now==start_time:
                     now = datetime.datetime.now().strftime('%H:%M:%S')
                     print(now," now")
                     print(start_time," start")
@@ -388,7 +395,8 @@ class MyWindow(QMainWindow, form_class):
                             break
 
             elif stopvalue % 2 != 0 and DCIsignal == 1 and DCVsignal == 0:
-                while True:
+                now=""
+                while now==start_time:
                     now = datetime.datetime.now().strftime('%H:%M:%S')
                     print(now)
                     print(start_time)
@@ -439,7 +447,7 @@ class MyWindow(QMainWindow, form_class):
                     ser.write(fff)
                     time.sleep(SSeconds)
                     out = ''
-                    new_time_data = int(time.time())
+                    new_time_data = (time.time()) #여기서 타임스탬프를 정수단위로 끊어줌.
                     # print(type(new_time_data))
                     while ser.inWaiting() > 0:  # ser.inWaiting == 16
                         out += ser.read().decode()
@@ -454,19 +462,20 @@ class MyWindow(QMainWindow, form_class):
 
     def loadcsv(self):
         global DCIxlabel, DCVxlabel, DCVsignal, DCIsignal, timelabel
+
         if DCIsignal == 1:
             path = QFileDialog.getOpenFileName(self, 'Open CSV', os.getenv('HOME'), 'CSV(*.csv)')[0]
             f = open(path, 'r')
             rdr = csv.reader(f)
             for line in rdr:
-                print(line)
-                print("time:",line[0]) #현재 타임스탬프 형태로 출력됨.
-                print("value:",line[1])
+                floatx = float(line[0])
+                floaty = float(line[2])
+                print("floatx 형", type(floatx))
+                timelabel.append(floatx)
+                DCIxlabel.append(floaty)
 
-                timelabel.append(line[0])
-                DCIxlabel.append(line[1])
 
-            self.maker()
+
 
 
         if DCVsignal == 1:
@@ -475,20 +484,25 @@ class MyWindow(QMainWindow, form_class):
             rdr = csv.reader(f)
 
             for line in rdr:
-                print(line)
-                print("time:", line[0])  # 현재 타임스탬프 형태로 출력됨.
-                print("value:", line[1])
+                floatx = float(line[0])
+                floaty = float(line[2])
+                print("가가나다 형",type(line[0]))
+                timelabel.append(floatx)
+                DCVxlabel.append(floaty)
 
-                timelabel.append(line[0])
-                DCIxlabel.append(line[1])
+                print("들어갑니다~~",timelabel)
+                print("들어갑니다~~",DCVxlabel)
 
-            self.maker()
+        self.maker()
 
-    def update_plot(self, new_time_data: int):
-        global xlabel, DCIsignal, DCVsignal, DCVxlabel, DCIxlabel, specifictime, limit_time, stopvalue, timetable
 
+
+    def update_plot(self, new_time_data: float): #new_time_data 수신(timestamp형태로 들어감)
+        global xlabel, DCIsignal, DCVsignal, DCVxlabel, DCIxlabel, specifictime, limit_time, stopvalue, timetable, plotx, ploty, realtime
+        string = time.localtime(new_time_data)
+        realtime = time.strftime('%Y-%m-%d %I:%M:%S:%MS %p', string)
         if specifictime == 1:  # 특정시간이 설정되어 있는 경우
-            print(new_time_data)
+            print("new_time_data입니다.",new_time_data)
             now = datetime.datetime.now().strftime('%H:%M:%S')
             print(now + " Now ")
             print(limit_time.toString())
@@ -499,6 +513,8 @@ class MyWindow(QMainWindow, form_class):
 
                 self.pw.setXRange(new_time_data - 10, new_time_data + 1, padding=0)  # 항상 x축 시간을 최근 범위만 보여줌.
                 self.pdi.setData(self.plotData['x'], self.plotData['y'])
+
+
 
             if DCVsignal == 0 and DCIsignal == 1:
                 self.plotData['y'].append(DCIxlabel[len(DCIxlabel) - 1])
@@ -513,10 +529,23 @@ class MyWindow(QMainWindow, form_class):
                 self.collect()
 
         if specifictime == 0:  # 특정시간이 설정되어 있지 않은 경우
+            tm = time.localtime(new_time_data)
+            print("new_time_data입니다.", new_time_data)
+            # print("변환한 timestamp입니다.", time.localtime(new_time_data))
+            string = time.strftime('%Y-%m-%d %I:%M:%S %p', tm)
+            print(string)
             if DCVsignal == 1 and DCIsignal == 0:
                 self.plotData['y'].append(DCVxlabel[len(DCVxlabel) - 1])
                 self.plotData['x'].append(new_time_data)
-                timetable.append(new_time_data)
+                print("실시간y축", self.plotData['y'])
+                print("실시간x축", self.plotData['x'])
+                plotx = self.plotData['x']
+                ploty = self.plotData['y']
+                print("원소가 대입되는 부분의 형",type(ploty[0]))
+                print("y축", self.plotData['y'])
+                print("x축", self.plotData['x'])
+
+                timetable.append(string)
 
                 self.pw.setXRange(new_time_data - 10, new_time_data + 1, padding=0)  # 항상 x축 시간을 최근 범위만 보여줌.
                 self.pdi.setData(self.plotData['x'], self.plotData['y'])
@@ -527,6 +556,8 @@ class MyWindow(QMainWindow, form_class):
                 print("실시간y축", self.plotData['y'])
                 print("실시간x축", self.plotData['x'])
                 timetable.append(new_time_data)
+                plotx = self.plotData['x']
+                ploty = self.plotData['y']
 
                 self.pw.setXRange(new_time_data - 10, new_time_data + 1, padding=0)  # 항상 x축 시간을 최근 범위만 보여줌.
                 self.pdi.setData(self.plotData['x'], self.plotData['y'])
@@ -543,40 +574,48 @@ class MyWindow(QMainWindow, form_class):
         hbox.addWidget(self.pw)
         self.setLayout(hbox)
         self.pw.setYRange(0, 70, padding=0)
-        time_data = int(timelabel)
+        time_data = int(time.time())
         self.pw.setXRange(time_data - 10, time_data + 1)  # 생략 가능.
         self.pw.showGrid(x=True, y=True)
-        self.pdi = self.pw.plot(pen='y')  # PlotDataItem obj 반환.
+        self.pdi2 = self.pw.plot(pen='y')  # PlotDataItem obj 반환.
         self.plotData = {'x': [], 'y': []}
-        self.csvupdate()
 
-    def csvupdate(self): #반복해서 값을 넣어주어야 하는데 그게 안되고 있음.
-        global DCIsignal, DCVsignal, DCVxlabel, DCIxlabel, timelabel
-        self.plotData['y'].append(DCIxlabel)
-        self.plotData['x'].append(timelabel)
-        print("y축", self.plotData['y'])
-        print("x축", self.plotData['x'])
-        self.pdi.setData(self.plotData['x'], self.plotData['y'])
+        if DCVsignal == 1:
+            for i in range (len(DCVxlabel)):
+                self.plotData['y'].append(DCVxlabel[i])
+                self.plotData['x'].append(timelabel[i])
+            print("y축", self.plotData['y'])
+            print("x축", self.plotData['x'])
+            self.pdi2.setData(self.plotData['x'], self.plotData['y'])
 
-
+        if DCIsignal == 1:
+            for i in range(len(DCIxlabel)):
+                self.plotData['y'].append(DCIxlabel[i])
+                self.plotData['x'].append(timelabel[i])
+            print("y축", self.plotData['y'])
+            print("x축", self.plotData['x'])
+            self.pdi2.setData(self.plotData['x'], self.plotData['y'])
 
 
     def writeCsv(self):
-        global DCVsignal, DCIsignal, DCVxlabel, DCIxlabel, timetable
+        global DCVsignal, DCIsignal, DCVxlabel, DCIxlabel, timetable, plotx, ploty, realtime
         path = QFileDialog.getSaveFileName(self, 'Save CSV', os.getenv('HOME'), 'CSV(*.csv)')
+
+        print("저장될 plotx",plotx)
+        print("저장될 ploty",ploty)
         if DCVsignal == 1:
             if path[0] != '':
                 with open(path[0], 'w', newline="") as csv_file:
                     writer = csv.writer(csv_file, dialect='excel')
-                    writer.writerows([time]+[element] for element in DCVxlabel for time in timetable)
+                    for i in range(len(plotx)):
+                        writer.writerow([plotx[i]]+[realtime]+[ploty[i]])
 
         if DCIsignal == 1:
             if path[0] != '':
                 with open(path[0], 'w', newline="") as csv_file:
                     writer = csv.writer(csv_file, dialect='excel')
-                    print("DCI",DCIxlabel)
-                    print("Time",timetable)
-                    writer.writerows([time]+[element] for element in DCIxlabel for time in timetable)
+                    for i in range(len(plotx)):
+                        writer.writerow([plotx[i]] +[realtime]+[ploty[i]])
 
 
 
